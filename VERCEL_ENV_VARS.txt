@@ -1,0 +1,33 @@
+# Copy your actual values from .env file and paste into Vercel Dashboard
+# Go to: https://vercel.com/dashboard → drsilke-autopost → Settings → Environment Variables
+
+# 1. DATABASE_URL (from Neon)
+DATABASE_URL=postgresql://YOUR_NEON_CONNECTION_STRING
+
+# 2. OPENAI_API_KEY (from your .env file)
+OPENAI_API_KEY=your-actual-openai-key
+
+# 3. FACEBOOK_PAGE_ACCESS_TOKEN (from your .env file)
+FACEBOOK_PAGE_ACCESS_TOKEN=your-actual-facebook-token
+
+# 4. FACEBOOK_PAGE_ID
+FACEBOOK_PAGE_ID=701016076625177
+
+# 5. CRON_SECRET
+CRON_SECRET=drsilke-secure-cron-secret-2024-prod
+
+# 6. BUSINESS_NAME
+BUSINESS_NAME=Dr. Silke Vogelmann-Sine, Ph.D.
+
+# 7. BUSINESS_URL
+BUSINESS_URL=https://www.silke.com
+
+# 8. BUSINESS_TYPE
+BUSINESS_TYPE=Mental Health / Psychology
+
+# 9. BUSINESS_LOCATION
+BUSINESS_LOCATION=Honolulu, Hawaii
+
+# Note: This file is for reference only.
+# DO NOT commit actual secrets to Git!
+# Add these variables through Vercel Dashboard UI.
