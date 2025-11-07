@@ -47,3 +47,4 @@ prisma/dev.db
 
 # generated images
 /public/generated/
+/app/generated/
