@@ -19,6 +19,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [schedulingWeek, setSchedulingWeek] = useState(false);
+  const [fetchingContent, setFetchingContent] = useState(false);
 
   useEffect(() => {
     fetchPosts();
@@ -83,6 +84,27 @@ export default function Dashboard() {
     }
   };
 
+  const fetchContent = async () => {
+    setFetchingContent(true);
+    try {
+      const response = await fetch('/api/content/fetch', {
+        method: 'POST'
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || data.error || 'Failed to fetch content');
+      }
+
+      alert('Content sources fetched successfully! You can now generate posts.');
+    } catch (error: any) {
+      console.error('Error fetching content:', error);
+      alert(`Failed to fetch content: ${error.message}`);
+    } finally {
+      setFetchingContent(false);
+    }
+  };
+
   const publishPost = async (postId: string) => {
     if (!confirm('Publish this post to Facebook now?')) return;
 
@@ -141,7 +163,14 @@ export default function Dashboard() {
           </p>
         </div>
 
-        <div className="mb-6 flex gap-4">
+        <div className="mb-6 flex gap-4 flex-wrap">
+          <button
+            onClick={fetchContent}
+            disabled={fetchingContent}
+            className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {fetchingContent ? 'Fetching...' : 'Fetch Content Sources'}
+          </button>
           <button
             onClick={generatePost}
             disabled={generating}
