@@ -45,12 +45,17 @@ export default function Dashboard() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ autoSchedule: true })
       });
-      await response.json();
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || data.error || 'Failed to generate post');
+      }
+
       await fetchPosts();
       alert('Post generated successfully!');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error generating post:', error);
-      alert('Failed to generate post');
+      alert(`Failed to generate post: ${error.message}`);
     } finally {
       setGenerating(false);
     }
@@ -63,11 +68,16 @@ export default function Dashboard() {
         method: 'POST'
       });
       const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || data.error || 'Failed to schedule posts');
+      }
+
       await fetchPosts();
       alert(`Generated ${data.postsGenerated} posts for the week!`);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error scheduling week:', error);
-      alert('Failed to schedule posts');
+      alert(`Failed to schedule posts: ${error.message}`);
     } finally {
       setSchedulingWeek(false);
     }
