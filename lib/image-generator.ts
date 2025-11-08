@@ -24,22 +24,13 @@ export async function generateImage(prompt: string, postId: string): Promise<str
       throw new Error('No image URL returned from DALL-E');
     }
 
-    // Download image
-    const imageResponse = await axios.get(imageUrl, {
-      responseType: 'arraybuffer'
-    });
+    // Return the DALL-E URL directly
+    // Facebook can download the image from this URL
+    // Note: DALL-E URLs are temporary (expire after ~1 hour) but that's fine
+    // since we'll post to Facebook immediately
+    console.log('✅ Image generated:', imageUrl);
 
-    // Save to public folder
-    const filename = `post-${postId}-${Date.now()}.png`;
-    const filepath = join(process.cwd(), 'public', 'generated', filename);
-
-    // Ensure directory exists
-    const { mkdir } = await import('fs/promises');
-    await mkdir(join(process.cwd(), 'public', 'generated'), { recursive: true });
-
-    await writeFile(filepath, imageResponse.data);
-
-    return `/generated/${filename}`;
+    return imageUrl;
   } catch (error) {
     console.error('Error generating image:', error);
     throw error;

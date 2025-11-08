@@ -31,30 +31,53 @@ export async function postToFacebook(
     if (imageUrl) {
       // Try to post with photo, fallback to text if it fails
       try {
-        const imagePath = join(process.cwd(), 'public', imageUrl);
+        // Check if imageUrl is a full URL (from DALL-E) or a local path
+        const isExternalUrl = imageUrl.startsWith('http://') || imageUrl.startsWith('https://');
 
-        const formData = new FormData();
-        formData.append('message', content);
-        formData.append('access_token', pageAccessToken);
-        formData.append('published', 'true');
-        formData.append('source', createReadStream(imagePath));
-
-        // Upload photo with increased timeout
-        const photoResponse = await axios.post(
-          `${FB_GRAPH_API}/${pageId}/photos`,
-          formData,
-          {
-            headers: {
-              ...formData.getHeaders()
+        if (isExternalUrl) {
+          // Post image from URL (DALL-E direct URL)
+          const photoResponse = await axios.post(
+            `${FB_GRAPH_API}/${pageId}/photos`,
+            {
+              url: imageUrl,
+              message: content,
+              access_token: pageAccessToken,
+              published: true
             },
-            timeout: 60000, // 60 seconds timeout
-            maxContentLength: Infinity,
-            maxBodyLength: Infinity
-          }
-        );
+            {
+              timeout: 60000
+            }
+          );
 
-        response = photoResponse.data;
-        console.log('✅ Photo posted successfully!');
+          response = photoResponse.data;
+          console.log('✅ Photo posted from URL successfully!');
+        } else {
+          // Post from local file (for backward compatibility)
+          const imagePath = join(process.cwd(), 'public', imageUrl);
+
+          const formData = new FormData();
+          formData.append('message', content);
+          formData.append('access_token', pageAccessToken);
+          formData.append('published', 'true');
+          formData.append('source', createReadStream(imagePath));
+
+          // Upload photo with increased timeout
+          const photoResponse = await axios.post(
+            `${FB_GRAPH_API}/${pageId}/photos`,
+            formData,
+            {
+              headers: {
+                ...formData.getHeaders()
+              },
+              timeout: 60000, // 60 seconds timeout
+              maxContentLength: Infinity,
+              maxBodyLength: Infinity
+            }
+          );
+
+          response = photoResponse.data;
+          console.log('✅ Photo posted from file successfully!');
+        }
       } catch (photoError: any) {
         console.error('⚠️  Photo upload failed, posting text only:', photoError.message);
 
