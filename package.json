@@ -10,7 +10,7 @@
     "postinstall": "prisma generate || true"
   },
   "engines": {
-    "node": "22.x",
+    "node": ">=24.0.0",
     "npm": ">=10.0.0"
   },
   "dependencies": {
