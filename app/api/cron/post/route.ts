@@ -4,15 +4,19 @@ import { postToFacebook } from '@/lib/facebook-poster';
 
 export async function GET(request: Request) {
   try {
-    // Verify this is a cron request (you can add more security here)
+    // Verify this is a cron request from Vercel
     const authHeader = request.headers.get('authorization');
-    const cronSecret = process.env.CRON_SECRET || 'your-secret-key';
+    const cronSecret = process.env.CRON_SECRET;
 
-    if (authHeader !== `Bearer ${cronSecret}`) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+    // In production, require authorization
+    if (process.env.NODE_ENV === 'production' && cronSecret) {
+      if (authHeader !== `Bearer ${cronSecret}`) {
+        console.log('Cron: Unauthorized request rejected');
+        return NextResponse.json(
+          { error: 'Unauthorized' },
+          { status: 401 }
+        );
+      }
     }
 
     // Get scheduled posts that should be posted now
