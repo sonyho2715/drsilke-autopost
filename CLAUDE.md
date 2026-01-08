@@ -5,7 +5,7 @@ Automated social media posting system for Dr. Silke. Scrapes content, generates 
 
 ## Tech Stack
 - **Framework:** Next.js 16 (App Router)
-- **Database:** PostgreSQL on Railway + Prisma
+- **Database:** PostgreSQL on Railway + Prisma 6.19
 - **Scraping:** Cheerio
 - **Social:** Facebook Business SDK
 - **Scheduling:** node-cron
